@@ -1,35 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {AuthContextProvider,Light,Dark,Sidebar, MenuHambur} from './index'
+import { MyRoutes } from './routes/routes'
+import styled, { ThemeProvider } from 'styled-components';
+import { createContext, useState } from 'react';
+import { Device } from './styles/breackpoints';
+
+
+export const ThemeContext = createContext(null);
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [themeuse, setTheme] = useState("dark");
+  const theme = themeuse === "light"?"light":"dark";
+  const themeStyle= theme==="light"?Light:Dark;
+  const [sidebarOpen,setSidebarOpen] = useState(false);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  <>
+    <ThemeContext.Provider value={{theme,setTheme}}>
+      <ThemeProvider theme={themeStyle}>
+        <AuthContextProvider>
+          <Container className={sidebarOpen?"active":""}>
+            <section className='contentSidebar'>
+              <Sidebar state={sidebarOpen} setState={()=>setSidebarOpen(!sidebarOpen)}/>
+            </section>
+            <section className='contentMenuHambur'> 
+              <MenuHambur/>
+            </section> 
+            <section className='ContentRoutes'>              
+            <MyRoutes/>
+            </section>
+          </Container>
+        </AuthContextProvider>
+      </ThemeProvider>
+    </ThemeContext.Provider>
+  </>
+  );
 }
 
-export default App
+const Container = styled.main`
+  display:grid;
+  grid-template-columns:1fr;
+  background-color:${(props)=>props.theme.bgtotal};
+
+  .contentSidebar{
+    display:none;
+  }
+  .contentMenuHambur{
+    display:block;
+    position:absolute;
+    left:20px;
+  }
+
+  @media ${Device.tablet} {
+    grid-template-columns: 65px 1fr;
+
+      &.active{
+        grid-template-columns:220px 1fr;
+      }
+      .contentSidebar{
+        display:initial;
+      }
+
+      .contentMenuHambur{
+        display:none;
+      }
+  }
+
+  .ContentRoutes{
+  grid-column:1;
+  width:100%;
+  @media ${Device.tablet} {
+    grid-column:2;
+  }
+
+  }
+`
+
+export default App;

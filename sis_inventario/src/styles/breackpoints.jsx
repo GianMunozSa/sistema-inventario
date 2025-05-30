@@ -10,3 +10,5 @@ export const Device = {
   laptop: `(min-width: ${sizes.laptop})`,
   desktop: `(min-width: ${sizes.desktop})`,
 };
+
+//export const d = {Device}
