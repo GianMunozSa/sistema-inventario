@@ -6,7 +6,7 @@ export const useUsuarioStore = create((set,get)=>({
         await supabase.auth.signUp({
             email: p.correo,
             password: p.pass,
-            }),
+            });
     }
     
 }))
